@@ -1,0 +1,59 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    atomic (1.1.99)
+    awesome_print (1.6.1)
+    clbustos-rtf (0.4.2)
+    daru (0.1.1)
+      reportbuilder (~> 1.4)
+      spreadsheet (~> 1.0.3)
+    dirty-memoize (0.0.4)
+    distribution (0.7.3)
+    extendmatrix (0.4)
+    gnuplotrb (0.3.1)
+      hamster (~> 1.0)
+    hamster (1.0.0)
+      atomic (~> 1.1)
+    minimization (0.2.3)
+      text-table (~> 1.2)
+    prawn (0.8.4)
+      prawn-core (>= 0.8.4, < 0.9)
+      prawn-layout (>= 0.8.4, < 0.9)
+      prawn-security (>= 0.8.4, < 0.9)
+    prawn-core (0.8.4)
+    prawn-layout (0.8.4)
+    prawn-security (0.8.4)
+    prawn-svg (0.9.1.11)
+      prawn (>= 0.8.4)
+    reportbuilder (1.4.2)
+      clbustos-rtf (~> 0.4.0)
+      prawn (~> 0.8.4)
+      prawn-svg (~> 0.9.1)
+      text-table (~> 1.2)
+    rserve-client (0.3.1)
+    ruby-ole (1.2.11.8)
+    rubyvis (0.6.1)
+    spreadsheet (1.0.9)
+      ruby-ole (>= 1.0)
+    statsample (2.0.1)
+      awesome_print (~> 1.6)
+      daru (~> 0.1)
+      dirty-memoize (~> 0.0.4)
+      distribution (~> 0.7)
+      extendmatrix (~> 0.4)
+      minimization (~> 0.2)
+      reportbuilder (~> 1.4)
+      rserve-client (~> 0.3)
+      rubyvis (~> 0.6.1)
+      spreadsheet (~> 1.0.3)
+    text-table (1.2.4)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  gnuplotrb
+  statsample
+
+BUNDLED WITH
+   1.10.6

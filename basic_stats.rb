@@ -2,6 +2,7 @@
 
 require 'statsample'
 require 'optparse'
+require 'gnuplot'
 
 # test code on statsample for mean and median!
 y = [1, 2, 3, 4, 1, 5].to_vector
@@ -11,11 +12,11 @@ puts 'Median of this sample is: ', y.median
 # code to parse the command line options
 options = {}
 OptionParser.new do |opts|
-  opts.banner = "Usage: example.rb [options]"
+	opts.banner = "Usage: example.rb [options]"
 
-  opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
-    options[:verbose] = v
-  end
+	opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
+		options[:verbose] = v
+	end
 	opts.on("-i=INPUT", "--input-file=INPUT", "Input file path") do |i|
 		options[:input_file] = i
 		if not i
@@ -81,11 +82,37 @@ end
 def build_histogram
 	p @all_times.count
 	h = @all_times.to_vector(:scale)
-	svg_xml_output = Statsample::Graph::Histogram.new(h).to_svg
+	# Statsample::Graph::Histogram.new(h).to_svg
 	p 'A histogram must have opened up!'
 	rb = ReportBuilder.new
 	rb.add(Statsample::Graph::Histogram.new(h))
 	rb.save_html('histogram.html')
 end
 
-build_histogram
+def build_history_of_averages(num_solves)
+	num_datapoints = (@all_times.count / num_solves).to_i
+	all_means = Array.new
+	for i in 0..num_datapoints
+		this_mean = @all_times[i*num_solves..(i+1)*num_solves].to_vector.mean
+		all_means.push(this_mean)
+	end
+	Gnuplot.open do |gp|
+		Gnuplot::Plot.new( gp ) do |plot|
+
+			plot.title  "Average of " + num_solves.to_s + " versus time"
+			plot.xlabel "time"
+			plot.ylabel "ao" + num_solves.to_s
+
+			y = all_means
+			x = (1..all_means.count).to_a
+
+			plot.data << Gnuplot::DataSet.new( [x, y] ) do |ds|
+				ds.with = "linespoints"
+				ds.notitle
+			end
+		end
+	end
+end
+
+# build_histogram
+build_history_of_averages 100

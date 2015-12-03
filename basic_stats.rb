@@ -1,4 +1,4 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
 
 require 'statsample'
 require 'optparse'
@@ -114,5 +114,48 @@ def build_history_of_averages(num_solves)
 	end
 end
 
+def build_graph_of_solve_times
+	Gnuplot.open do |gp|
+		Gnuplot::Plot.new( gp ) do |plot|
+
+			plot.title  "Solvetime evolution over time"
+			plot.xlabel "epochs"
+			plot.ylabel "Solve times"
+
+			y = @all_times
+			x = (1..@all_times.count).to_a
+
+			plot.data << Gnuplot::DataSet.new( [x, y] ) do |ds|
+				ds.with = "linespoints"
+				ds.notitle
+			end
+		end
+	end
+end
+
+def build_graph_of_last_few_solve_times(num_solves)
+	Gnuplot.open do |gp|
+		Gnuplot::Plot.new( gp ) do |plot|
+
+			plot.title  "Last " + num_solves.to_s + " solvetimes"
+			plot.xlabel "Epochs"
+			plot.ylabel "Solvetime"
+
+			start_index = @all_times.count - num_solves
+			end_index = @all_times.count-1
+
+			y = @all_times[@all_times.count-num_solves..@all_times.count-1]
+			x = (@all_times.count-num_solves..@all_times.count-1).to_a
+
+			plot.data << Gnuplot::DataSet.new( [x, y] ) do |ds|
+				ds.with = "linespoints"
+				ds.notitle
+			end
+		end
+	end
+end
+
 # build_histogram
-build_history_of_averages 100
+# build_history_of_averages 50
+# build_graph_of_solve_times 
+build_graph_of_last_few_solve_times 50

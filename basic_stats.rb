@@ -141,8 +141,8 @@ def build_graph_of_last_few_solve_times(num_solves)
 			plot.xlabel "Epochs"
 			plot.ylabel "Solvetime"
 
-			start_index = @all_times.count - num_solves
-			end_index = @all_times.count-1
+			#start_index = @all_times.count - num_solves
+			#end_index = @all_times.count-1
 
 			y = @all_times[@all_times.count-num_solves..@all_times.count-1]
 			x = (@all_times.count-num_solves..@all_times.count-1).to_a
@@ -155,7 +155,64 @@ def build_graph_of_last_few_solve_times(num_solves)
 	end
 end
 
+def build_hist_of_time_distribution(start_time, end_time, min_distance)
+	main_hash = Hash.new(0)
+	num_bins = ((end_time - start_time) / min_distance).to_f.ceil
+
+	printf "Number of bins is %d\n", num_bins
+
+	@all_times.each do |time|
+		if time >= start_time and time <= end_time
+			main_hash[((time - start_time) / min_distance).floor] += 1
+		end
+	end
+
+	puts main_hash.count
+	puts main_hash.to_s
+
+	data = Array.new
+
+	for i in main_hash
+		data.push([i, main_hash[i]])
+	end
+
+	Gnuplot.open do |gp|
+		Gnuplot::Plot.new(gp) do |plot|
+
+			plot.title  "Time Distribution"
+			plot.style  "data histograms"
+			plot.xtics	"nomirror rotate"
+			plot.boxwidth "0.5"
+			# plot.xtics  "nomirror rotate by +45"
+
+			x = Array.new
+			y = Array.new
+
+			(0..num_bins-1).to_a.each do |index|
+				x.push((start_time + index * min_distance).to_s + "-" + (start_time + (index+1) * min_distance).to_s)
+				y.push(main_hash[index])
+			end
+
+			plot.yrange "[0:#{main_hash.max_by{|k, v| v}[1] * 1.25}]"
+
+			plot.data = [
+			 	Gnuplot::DataSet.new( [x, y] ) { |ds|
+				ds.using = "2:xtic(1)"
+				ds.with = "boxes fill solid 0.8"
+				# ds.with = "candlesticks"
+				ds.title = "Number of solves"
+				},
+				Gnuplot::DataSet.new( [x, y] ) { |ds|
+					ds.using = "0:(10 + $2):2 with labels"
+					ds.title = ""
+				}
+			]
+		end
+	end
+end
+
 # build_histogram
 # build_history_of_averages 50
 # build_graph_of_solve_times 
-build_graph_of_last_few_solve_times 50
+# build_graph_of_last_few_solve_times 100
+build_hist_of_time_distribution(15, 30, 1)

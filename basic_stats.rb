@@ -99,12 +99,39 @@ def build_history_of_averages(num_solves)
 	Gnuplot.open do |gp|
 		Gnuplot::Plot.new( gp ) do |plot|
 
-			plot.title  "Average of " + num_solves.to_s + " versus time"
-			plot.xlabel "time"
-			plot.ylabel "ao" + num_solves.to_s
+			plot.title  "Average of #{num_solves} versus time (Total of #{@all_times.count} solves)"
+			plot.xlabel "n-th set of #{num_solves} solves"
+			plot.ylabel "Average of #{num_solves}"
+			plot.xrange "[0:#{all_means.count+2}]"
 
 			y = all_means
 			x = (1..all_means.count).to_a
+
+			plot.data << Gnuplot::DataSet.new( [x, y] ) do |ds|
+				ds.with = "linespoints"
+				ds.notitle
+			end
+		end
+	end
+end
+
+def build_history_of_best_solves(num_solves)
+	num_datapoints = (@all_times.count / num_solves).to_i
+	all_best_times = Array.new
+	for i in 0..num_datapoints
+		this_min = @all_times[i*num_solves..(i+1)*num_solves].to_vector.min
+		all_best_times.push(this_min)
+	end
+	Gnuplot.open do |gp|
+		Gnuplot::Plot.new( gp ) do |plot|
+
+			plot.title  "Best of #{num_solves} versus time (Total of #{@all_times.count} solves)"
+			plot.xlabel "n-th set of #{num_solves} solves"
+			plot.ylabel "Best of #{num_solves}"
+			plot.xrange "[0:#{all_best_times.count+2}]"
+
+			y = all_best_times
+			x = (1..all_best_times.count+2).to_a
 
 			plot.data << Gnuplot::DataSet.new( [x, y] ) do |ds|
 				ds.with = "linespoints"
@@ -118,9 +145,9 @@ def build_graph_of_solve_times
 	Gnuplot.open do |gp|
 		Gnuplot::Plot.new( gp ) do |plot|
 
-			plot.title  "Solvetime evolution over time"
-			plot.xlabel "epochs"
-			plot.ylabel "Solve times"
+			plot.title  "Solvetime evolution over time (Total of #{@all_times.count} solves)"
+			plot.xlabel "Time"
+			plot.ylabel "Solvetimes"
 
 			y = @all_times
 			x = (1..@all_times.count).to_a
@@ -137,8 +164,8 @@ def build_graph_of_last_few_solve_times(num_solves)
 	Gnuplot.open do |gp|
 		Gnuplot::Plot.new( gp ) do |plot|
 
-			plot.title  "Last " + num_solves.to_s + " solvetimes"
-			plot.xlabel "Epochs"
+			plot.title  "Last #{num_solves}solvetimes (Total of #{@all_times.count} solves)"
+			plot.xlabel "Time"
 			plot.ylabel "Solvetime"
 
 			#start_index = @all_times.count - num_solves
@@ -179,7 +206,7 @@ def build_hist_of_time_distribution(start_time, end_time, min_distance)
 	Gnuplot.open do |gp|
 		Gnuplot::Plot.new(gp) do |plot|
 
-			plot.title  "Time Distribution"
+			plot.title  "Time Distribution (Total of #{@all_times.count} solves)"
 			plot.style  "data histograms"
 			plot.xtics	"nomirror rotate"
 			plot.boxwidth "0.5"
@@ -212,7 +239,8 @@ def build_hist_of_time_distribution(start_time, end_time, min_distance)
 end
 
 # build_histogram
-# build_history_of_averages 50
-# build_graph_of_solve_times 
-# build_graph_of_last_few_solve_times 100
-build_hist_of_time_distribution(15, 30, 1)
+#build_history_of_averages 100
+#build_graph_of_solve_times 
+#build_graph_of_last_few_solve_times 100
+#build_hist_of_time_distribution(15, 30, 1)
+#build_history_of_best_solves 100

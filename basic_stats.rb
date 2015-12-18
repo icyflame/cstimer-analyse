@@ -164,7 +164,7 @@ def build_graph_of_last_few_solve_times(num_solves)
 	Gnuplot.open do |gp|
 		Gnuplot::Plot.new( gp ) do |plot|
 
-			plot.title  "Last #{num_solves}solvetimes (Total of #{@all_times.count} solves)"
+			plot.title  "Last #{num_solves} solvetimes (Total of #{@all_times.count} solves)"
 			plot.xlabel "Time"
 			plot.ylabel "Solvetime"
 
@@ -242,5 +242,5 @@ end
 #build_history_of_averages 100
 #build_graph_of_solve_times 
 #build_graph_of_last_few_solve_times 100
-#build_hist_of_time_distribution(15, 30, 1)
+#build_hist_of_time_distribution(22, 24, 0.2)
 #build_history_of_best_solves 100

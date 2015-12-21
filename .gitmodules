@@ -1,0 +1,3 @@
+[submodule "cstimer_analyser_cli"]
+	path = cstimer_analyser_cli
+	url = ./cstimer_analyser_cli/
